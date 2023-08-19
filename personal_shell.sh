@@ -11,10 +11,23 @@ then
 	mkdir $note_dir
 fi
 
-# adds a attr tag to a file if specified in file with '#>tag_note:<tag>'
-#function apply_tag() {
-	# todo
-#}
+# adds a attr tag to a file if specified in file with '#-><tag>'
+function apply_tag() {
+	filename=$@
+	sed '/^#->\(.*\)/q10;' $filename > /dev/null
+	if test $? -eq 10
+	then
+		# search for the line that begins with '#->' and extract
+		# the tag from that line
+		tag=$(cat $filename | sed '/^#->\(.*\)/!d; s/^#->\(.*\)/\1/')
+		echo add \'$tag\' tag to file $file
+		# add attr to file
+		attr -q -s note_tag -V $(echo $tag | tr '[:blank:]' '_') \
+			$filename
+	else
+		echo No tags found in file
+	fi
+}
 
 # commando to add a note: note <note_titel>
 function note {
@@ -23,6 +36,8 @@ function note {
 	filename=$(date +"%y_%m_%d")_$(echo $@ | tr '[:blank:]' '_').txt
 	# open file with favorite editor
 	$editor $note_dir/$filename
+	# apply tag
+	apply_tag $note_dir/$filename
 }
 
 # commando to open note with a tag: note_tag <tag>
@@ -34,10 +49,12 @@ function note_tag {
 		tag=$(attr -q -g note_tag $i 2>/dev/null)
 		# if file tag compares to given argument
 		# end search and open editor
-		if test tag=$@
+		if test "$tag" == "$@"
 		then
 			filename=$i
 			$editor $filename
+			# apply tag
+			apply_tag $filename
 			break
 		fi
 	done
@@ -46,3 +63,4 @@ function note_tag {
 # expose commando's to the user
 export note
 export note_tag
+export apply_tag

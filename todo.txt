@@ -1,0 +1,11 @@
+
+ID  Age   Tag       Description                                             Urg
+--- ----- --------- ------------------------------------------------------- ----
+216  2w   todo      resolve bug that note apply a tag too early after        0.9
+                    editor is paused.
+217  2w   todo      add note directive that download a webpage and washed    0.9
+                    to simplified form
+218  2w   todo      add pdf generator to note                                0.9
+220  2w   todo      create a central command to use note note_tag apply_tag 0.89
+                    and list_tags functionalities
+221  2w   todo      note note_tag there is no typo correction               0.89

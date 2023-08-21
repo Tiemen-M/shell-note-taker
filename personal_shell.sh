@@ -32,7 +32,7 @@ function apply_tag() {
 
 # commando to add a note: note <note_titel>
 function note {
-	# format new filename in "<date>_<titel>.txt" and replace spaces 
+	# format new filename in "<date>_<titel>.txt" and replace spaces
 	# with undercores
 	filename=$(date +"%y_%m_%d")_$(echo $@ | tr '[:blank:]' '_').txt
 	# open file with favorite editor
@@ -54,11 +54,13 @@ function note_tag {
 		then
 			filename=$i
 			$editor $filename
-			# apply tag
+            # apply tag
 			apply_tag $filename
-			break
+			return
 		fi
 	done
+    # this code will only be reached when tag is not found
+    echo There are no notes with the tag \'$@\'
 }
 
 # list all used tags: list_tags

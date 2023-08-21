@@ -12,18 +12,19 @@ then
 fi
 
 # adds a attr tag to a file if specified in file with '#-><tag>'
+# apply_tag <file name>
 function apply_tag() {
 	filename=$@
+    # check if the file contains tags
 	sed '/^#->\(.*\)/q10;' $filename > /dev/null
 	if test $? -eq 10
 	then
-		# search for the line that begins with '#->' and extract
-		# the tag from that line
-		tag=$(cat $filename | sed '/^#->\(.*\)/!d; s/^#->\(.*\)/\1/')
-		echo add \'$tag\' tag to file $file
-		# add attr to file
-		attr -q -s note_tag -V $(echo $tag | tr '[:blank:]' '_') \
-			$filename
+        # extract tag name from file
+		tag=$(cat $filename | sed '/^#->\(.*\)/!d; s/^#->\(.*\)/\1/' | tr '[:blank:]' '_')
+		# add tag as a attr value to the file
+		attr -q -s note_tag -V $tag $filename
+        # message user that tag is added
+        echo add \'$tag\' tag to file
 	else
 		echo No tags found in file
 	fi
@@ -49,7 +50,7 @@ function note_tag {
 		tag=$(attr -q -g note_tag $i 2>/dev/null)
 		# if file tag compares to given argument
 		# end search and open editor
-		if test "$tag" == "$@"
+		if test "$tag" == "$(echo $@)"
 		then
 			filename=$i
 			$editor $filename

@@ -61,6 +61,18 @@ function note_tag {
 	done
 }
 
+# list all used tags: list_tags
+function list_tags {
+    for i in $note_dir/*.txt
+    do
+        tag=$(attr -qg note_tag $i 2> /dev/null)
+        if [ $? -eq 0 ]
+        then
+            echo $tag
+        fi
+    done
+}
+
 # expose commando's to the user
 export note
 export note_tag

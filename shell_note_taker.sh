@@ -1,3 +1,20 @@
+# File: shell_note_taker.sh
+# Part of the project: shell note taker
+#
+# Copyright 2025 Tiemen Molenaar
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # created by tiemen Molenaar
 
 # setup variables
@@ -15,16 +32,16 @@ fi
 # apply_tag <file name>
 function apply_tag() {
 	filename=$@
-    # check if the file contains tags
+  # check if the file contains tags
 	sed '/^#->\(.*\)/q10;' $filename > /dev/null
 	if test $? -eq 10
 	then
-        # extract tag name from file
+    # extract tag name from file
 		tag=$(cat $filename | sed '/^#->\(.*\)/!d; s/^#->\(.*\)/\1/' | tr '[:blank:]' '_')
 		# add tag as a attr value to the file
-		attr -q -s note_tag -V $tag $filename
-        # message user that tag is added
-        echo add \'$tag\' tag to file
+		attr -q -s note_tag -V "$tag" $filename
+    # message user that tag is added
+    echo add \'$tag\' tag to file
 	else
 		echo No tags found in file
 	fi
@@ -50,17 +67,17 @@ function note_tag {
 		tag=$(attr -q -g note_tag $i 2>/dev/null)
 		# if file tag compares to given argument
 		# end search and open editor
-		if test "$tag" == "$(echo $@)"
+    if test "$tag" == "$@"
 		then
 			filename=$i
 			$editor $filename
-            # apply tag
+      # apply tag
 			apply_tag $filename
 			return
 		fi
 	done
-    # this code will only be reached when tag is not found
-    echo There are no notes with the tag \'$@\'
+  # this code will only be reached when tag is not found
+  echo There are no notes with the tag \'$@\'
 }
 
 # list all used tags: list_tags
@@ -79,3 +96,4 @@ function list_tags {
 export note
 export note_tag
 export apply_tag
+export list_tags
